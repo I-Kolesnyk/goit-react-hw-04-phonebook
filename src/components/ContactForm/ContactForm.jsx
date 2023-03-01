@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// import { ErrorMessage } from '@hookform/error-message';
 import { object, string } from 'yup';
 import {
   StyledLabel,
@@ -17,14 +16,22 @@ const numberRegex =
   /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/;
 
 const schema = object().shape({
-  name: string().max(20).required('Name is required').matches(nameRegex, {
-    message:
-      "Invalid name. Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan.",
-  }),
-  number: string().required('Number is required').min(5).matches(numberRegex, {
-    message:
-      'Invalid number. Phone number must be digits and can contain spaces, dashes, parentheses and can start with +.',
-  }),
+  name: string()
+    .trim()
+    .max(64)
+    .required('Name is required')
+    .matches(nameRegex, {
+      message:
+        "Invalid name. Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan.",
+    }),
+  number: string()
+    .trim()
+    .required('Number is required')
+    .min(5)
+    .matches(numberRegex, {
+      message:
+        'Invalid number. Phone number must be digits and can contain spaces, dashes, parentheses and can start with +.',
+    }),
 });
 
 function ContactForm({ onSubmit }) {
@@ -40,9 +47,10 @@ function ContactForm({ onSubmit }) {
       lastName: '',
     },
     resolver: yupResolver(schema),
+    mode: 'onTouched',
   });
 
-  useEffect(() => {    
+  useEffect(() => {
     if (formState.isSubmitSuccessful && formState.isValid) {
       reset();
     }
@@ -55,6 +63,7 @@ function ContactForm({ onSubmit }) {
         <StyledInput
           type="text"
           placeholder="Enter a contact name"
+          autocomplete="off"
           {...register('name')}
         />
         {errors.name && <div>{errors.name?.message}</div>}
@@ -65,6 +74,7 @@ function ContactForm({ onSubmit }) {
         <StyledInput
           type="tel"
           placeholder="Enter a contact number"
+          autocomplete="off"
           {...register('number')}
         />
         {errors.number && <div>{errors.number?.message}</div>}
