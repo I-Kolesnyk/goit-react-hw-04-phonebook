@@ -18,7 +18,6 @@ function App() {
   const [filter, setFilter] = useState('');
 
   const addContact = ({ name, number }) => {
-    const contact = { id: nanoid(), name, number };
     const normalizedName = name.toLowerCase();
 
     if (
@@ -26,6 +25,8 @@ function App() {
     ) {
       return alert(`${name} is already in contacts!`);
     }
+
+    const contact = { id: nanoid(), name, number };
 
     setContacts(prevContacts => [contact, ...prevContacts]);
   };
